@@ -1,8 +1,25 @@
 'use client';
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { getLatestBlock, getBlockByHeight, Block } from '@/utils/api';
 
-const PAGE_SIZE = 20;
+const BLOCKS_PER_PAGE = 25;
+
+const truncateString = (str: string, startLength: number = 10, endLength: number = 6) => {
+  if (str.length <= startLength + endLength) return str;
+  return `${str.slice(0, startLength)}...${str.slice(-endLength)}`;
+};
 
 const BlockExplorer: React.FC = () => {
   const [blocks, setBlocks] = useState<Block[]>([]);
@@ -30,7 +47,7 @@ const BlockExplorer: React.FC = () => {
     setIsLoading(true);
     try {
       const blockPromises = [];
-      for (let i = 0; i < PAGE_SIZE; i++) {
+      for (let i = 0; i < BLOCKS_PER_PAGE; i++) {
         const height = startHeight - i;
         if (height >= 0) {
           blockPromises.push(getBlockByHeight(height));
@@ -70,66 +87,89 @@ const BlockExplorer: React.FC = () => {
 
   useEffect(() => {
     if (latestBlock) {
-      const startHeight = latestBlock.height - (currentPage - 1) * PAGE_SIZE;
+      const startHeight = latestBlock.height - (currentPage - 1) * BLOCKS_PER_PAGE;
       fetchBlocks(startHeight);
     }
   }, [currentPage, latestBlock, fetchBlocks]);
 
-  const handlePrevPage = useCallback(() => {
+  const goToPreviousPage = useCallback(() => {
     if (currentPage > 1) {
       setCurrentPage(prev => prev - 1);
     }
   }, [currentPage]);
 
-  const handleNextPage = useCallback(() => {
-    if (latestBlock && (currentPage * PAGE_SIZE) < latestBlock.height) {
+  const goToNextPage = useCallback(() => {
+    if (latestBlock && (currentPage * BLOCKS_PER_PAGE) < latestBlock.height) {
       setCurrentPage(prev => prev + 1);
     }
   }, [currentPage, latestBlock]);
 
+  const totalPages = latestBlock ? Math.ceil(latestBlock.height / BLOCKS_PER_PAGE) : 1;
+
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Blockchain Explorer</h2>
-      {latestBlock && (
-        <div className="mb-4 p-2 bg-blue-100 rounded">
-          <h3 className="font-semibold">Latest Block</h3>
-          <p>Height: {latestBlock.height}</p>
-          <p>Timestamp: {new Date(latestBlock.timestamp).toLocaleString()}</p>
-        </div>
-      )}
-      <div className="mb-4">
-        <p>Current Page: {currentPage}</p>
-        {currentPage === 1 && <p className="text-green-600">Live updates active</p>}
-      </div>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <ul className="mb-4">
-          {blocks.map(block => (
-            <li key={block.height} className="mb-2 p-2 bg-gray-100 rounded">
-              Height: {block.height}, Timestamp: {new Date(block.timestamp).toLocaleString()}, Txs: {block.txs.length}
-            </li>
-          ))}
-        </ul>
-      )}
-      <div>
-        <button 
-          onClick={handlePrevPage} 
-          disabled={currentPage === 1}
-          className="mr-2 px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
-        >
-          Previous
-        </button>
-        <button 
-          onClick={handleNextPage} 
-          disabled={!latestBlock || ((currentPage * PAGE_SIZE) >= latestBlock.height)}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
-        >
-          Next
-        </button>
-      </div>
+    <div className="min-h-screen bg-gray-100 p-4">
+      <Card className="w-full max-w-6xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center">Blockchain Explorer</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px]">Height</TableHead>
+                    <TableHead>Parent Block</TableHead>
+                    <TableHead>Timestamp</TableHead>
+                    <TableHead className="text-right">Transactions</TableHead>
+                    <TableHead>State Root</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center">Loading...</TableCell>
+                    </TableRow>
+                  ) : (
+                    blocks.map((block) => (
+                      <TableRow key={block.height}>
+                        <TableCell className="font-medium">{block.height}</TableCell>
+                        <TableCell className="font-mono text-sm">{truncateString(block.parent)}</TableCell>
+                        <TableCell>{new Date(block.timestamp).toLocaleString()}</TableCell>
+                        <TableCell className="text-right">{block.txs.length}</TableCell>
+                        <TableCell className="font-mono text-sm">{truncateString(block.stateRoot)}</TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+            <div className="flex justify-between items-center">
+              <Button
+                onClick={goToPreviousPage}
+                disabled={currentPage === 1}
+                aria-label="Previous page"
+              >
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Previous
+              </Button>
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button
+                onClick={goToNextPage}
+                disabled={currentPage === totalPages}
+                aria-label="Next page"
+              >
+                Next
+                <ChevronRight className="h-4 w-4 ml-2" />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
