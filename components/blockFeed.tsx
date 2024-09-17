@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { getLatestBlock, getBlockByHeight, Block } from '@/utils/api';
 
-const BLOCKS_PER_PAGE = 25;
+const PAGE_SIZE = 25;
 
 const truncateString = (str: string, startLength: number = 10, endLength: number = 6) => {
   if (str.length <= startLength + endLength) return str;
@@ -47,7 +47,7 @@ const BlockExplorer: React.FC = () => {
     setIsLoading(true);
     try {
       const blockPromises = [];
-      for (let i = 0; i < BLOCKS_PER_PAGE; i++) {
+      for (let i = 0; i < PAGE_SIZE; i++) {
         const height = startHeight - i;
         if (height >= 0) {
           blockPromises.push(getBlockByHeight(height));
@@ -87,24 +87,24 @@ const BlockExplorer: React.FC = () => {
 
   useEffect(() => {
     if (latestBlock) {
-      const startHeight = latestBlock.height - (currentPage - 1) * BLOCKS_PER_PAGE;
+      const startHeight = latestBlock.height - (currentPage - 1) * PAGE_SIZE;
       fetchBlocks(startHeight);
     }
   }, [currentPage, latestBlock, fetchBlocks]);
 
-  const goToPreviousPage = useCallback(() => {
+  const handlePrevPage = useCallback(() => {
     if (currentPage > 1) {
       setCurrentPage(prev => prev - 1);
     }
   }, [currentPage]);
 
-  const goToNextPage = useCallback(() => {
-    if (latestBlock && (currentPage * BLOCKS_PER_PAGE) < latestBlock.height) {
+  const handleNextPage = useCallback(() => {
+    if (latestBlock && (currentPage * PAGE_SIZE) < latestBlock.height) {
       setCurrentPage(prev => prev + 1);
     }
   }, [currentPage, latestBlock]);
 
-  const totalPages = latestBlock ? Math.ceil(latestBlock.height / BLOCKS_PER_PAGE) : 1;
+  const totalPages = latestBlock ? Math.ceil(latestBlock.height / PAGE_SIZE) : 1;
 
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
@@ -148,7 +148,7 @@ const BlockExplorer: React.FC = () => {
             </div>
             <div className="flex justify-between items-center">
               <Button
-                onClick={goToPreviousPage}
+                onClick={handlePrevPage}
                 disabled={currentPage === 1}
                 aria-label="Previous page"
               >
@@ -159,7 +159,7 @@ const BlockExplorer: React.FC = () => {
                 Page {currentPage} of {totalPages}
               </span>
               <Button
-                onClick={goToNextPage}
+                onClick={handleNextPage}
                 disabled={currentPage === totalPages}
                 aria-label="Next page"
               >
