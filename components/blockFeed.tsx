@@ -73,12 +73,12 @@ const BlockTable: React.FC<BlockTableProps> = ({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 1 }}
+              transition={{ duration: 0.5 }}
             >
               <TableCell colSpan={6}>
                 <div className="flex items-center justify-center py-4">
                   <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-primary"></div>
-                  <span className="ml-2 text-sm text-muted-foreground">Loading new block...</span>
+                  <span className="ml-2 text-sm text-muted-foreground">Loading new blocks...</span>
                 </div>
               </TableCell>
             </motion.tr>

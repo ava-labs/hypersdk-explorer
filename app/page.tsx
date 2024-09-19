@@ -48,7 +48,7 @@ export default function Home() {
     } catch (err) {
       setError(`Failed to fetch blocks: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => setIsLoading(false), 1000);
     }
   }, []);
 
