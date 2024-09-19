@@ -1,9 +1,10 @@
 import React from 'react';
-import { ChevronDown, ChevronUp, Copy, Clock, Hash, Layers } from 'lucide-react';
+import { ChevronDown, ChevronUp, Copy, Clock, Hash } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Skeleton } from "@/components/ui/skeleton"
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Table,
@@ -77,8 +78,8 @@ const BlockTable: React.FC<BlockTableProps> = ({
             >
               <TableCell colSpan={6}>
                 <div className="flex items-center justify-center py-4">
-                  <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-primary"></div>
-                  <span className="ml-2 text-sm text-muted-foreground">Loading new blocks...</span>
+                  <Skeleton className="w-[100px] h-[20px] rounded-full" />
+                  <span className="ml-2 text-sm text-muted-foreground font-semibold">Loading new blocks...</span>
                 </div>
               </TableCell>
             </motion.tr>
@@ -93,7 +94,6 @@ const BlockTable: React.FC<BlockTableProps> = ({
               >
                 <TableCell className="font-medium">
                   <div className="flex items-center space-x-2">
-                    <Layers className="h-4 w-4 text-primary" />
                     <span>{block.height}</span>
                   </div>
                 </TableCell>
