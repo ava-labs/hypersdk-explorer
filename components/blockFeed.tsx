@@ -32,20 +32,27 @@ const BlockTable: React.FC<BlockTableProps> = ({
   copyToClipboard,
   copiedField,
 }) => {
-  const TruncateWithTooltip: React.FC<{ content: string; maxLength?: number }> = ({ content, maxLength = 20 }) => (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span className="cursor-help">
-            {content.length > maxLength ? `${content.slice(0, maxLength)}...` : content}
-          </span>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p className="max-w-xs break-all">{content}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
+  const TruncateWithTooltip: React.FC<{ content: string }> = ({ content }) => {
+    const truncate = (str: string, startChars: number, endChars: number) => {
+      if (str.length <= startChars + endChars) return str;
+      return `${str.slice(0, startChars)}...${str.slice(-endChars)}`;
+    };
+
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="cursor-help">
+              {truncate(content, 10, 6)}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="max-w-xs break-all">{content}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+  }
 
   return (
     <Table>
@@ -66,7 +73,7 @@ const BlockTable: React.FC<BlockTableProps> = ({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 1 }}
             >
               <TableCell colSpan={6}>
                 <div className="flex items-center justify-center py-4">
@@ -170,7 +177,7 @@ const BlockTable: React.FC<BlockTableProps> = ({
                               <h4 className="font-semibold mb-1">Transactions:</h4>
                               {block.txs.map((tx, index) => (
                                 <div key={index} className="mb-2 p-2 bg-background rounded-md">
-                                  <p><strong>To:</strong> <TruncateWithTooltip content={tx.actions[0]?.to || 'N/A'} maxLength={30} /></p>
+                                  <p><strong>To:</strong> <TruncateWithTooltip content={tx.actions[0]?.to || 'N/A'} /></p>
                                   <p><strong>Value:</strong> {tx.actions[0]?.value || 'N/A'}</p>
                                   <p><strong>Memo:</strong> {tx.actions[0]?.memo || 'N/A'}</p>
                                 </div>
