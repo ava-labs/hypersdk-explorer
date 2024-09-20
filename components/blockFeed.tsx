@@ -56,6 +56,7 @@ const BlockTable: React.FC<BlockTableProps> = ({
   }
 
   return (
+    <div className="h-[calc(100vh-200px)] overflow-y-auto">
     <Table>
       <TableHeader>
         <TableRow className="bg-muted/50">
@@ -195,6 +196,7 @@ const BlockTable: React.FC<BlockTableProps> = ({
         </AnimatePresence>
       </TableBody>
     </Table>
+    </div>
   );
 };
 
