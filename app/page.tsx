@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Box } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BlockTable from '@/components/blockFeed';
 import { getLatestBlock, getBlockByHeight, Block } from '@/utils/api';
 
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 20;
 
 export default function Home() {
   const [blocks, setBlocks] = useState<Block[]>([]);
@@ -115,7 +115,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <Card className="w-full max-w-6xl mx-auto">
+      <div className="w-full max-w-6xl mx-auto">
         <CardHeader>
           <CardTitle className="text-2xl font-bold flex items-center space-x-2">
             <Box className="h-6 w-6 text-primary" />
@@ -157,7 +157,7 @@ export default function Home() {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </div>
     </div>
   );
 }

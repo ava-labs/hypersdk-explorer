@@ -162,45 +162,44 @@ const BlockTable: React.FC<BlockTableProps> = ({
                     transition={{ duration: 0.3 }}
                   >
                   <TableCell colSpan={6}>
-                    <Card className="bg-muted/30 border-none shadow-none">
-                      <CardContent className="p-4">
-                        <h3 className="font-semibold mb-4 flex items-center space-x-2">
-                          <Hash className="h-4 w-4 text-primary" />
-                          <span>Block Details</span>
-                        </h3>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Block Details</CardTitle>
+                      </CardHeader>
+                      <CardContent>
                         <div className="space-y-4">
-                          <div>
-                            <Badge variant="outline" className="mb-1 flex items-center w-fit">
+                          <div className="p-4 rounded-lg bg-blue-100 dark:bg-blue-900">
+                            <Badge variant="outline" className="mb-1 flex items-center w-fit bg-blue-200 dark:bg-blue-800">
                               <Hash className="h-4 w-4 mr-2" />Chain ID
                             </Badge>
-                            <p className="font-mono">{block.txs[0]?.base.chainId || 'N/A'}</p>
+                            <p className="mt-2 font-mono text-blue-800 dark:text-blue-200">{block.txs[0]?.base.chainId || 'N/A'}</p>
                           </div>
-                          <div>
-                            <Badge variant="outline" className="mb-1 flex items-center w-fit">
+                          <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900">
+                            <Badge variant="outline" className="mb-1 flex items-center w-fit bg-green-200 dark:bg-green-800">
                               <BadgeCent className="h-4 w-4 mr-2" />Max Fee
                             </Badge>
-                            <p>{block.txs[0]?.base.maxFee || 'N/A'}</p>
+                            <p className="mt-2 text-green-800 dark:text-green-200">{block.txs[0]?.base.maxFee || 'N/A'}</p>
                           </div>
-                          <div>
-                            <Badge variant="outline" className="mb-1 flex items-center w-fit">
+                          <div className="p-4 rounded-lg bg-purple-100 dark:bg-purple-900">
+                            <Badge variant="outline" className="mb-1 flex items-center w-fit bg-purple-200 dark:bg-purple-800">
                               <ArrowRightLeft className="h-4 w-4 mr-2" />Transactions
                             </Badge>
                             <Table className="mt-2">
                               <TableHeader>
                                 <TableRow>
-                                  <TableHead>To</TableHead>
-                                  <TableHead>Value</TableHead>
-                                  <TableHead>Memo</TableHead>
+                                  <TableHead className="text-purple-800 dark:text-purple-200">To</TableHead>
+                                  <TableHead className="text-purple-800 dark:text-purple-200">Value</TableHead>
+                                  <TableHead className="text-purple-800 dark:text-purple-200">Memo</TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
                                 {block.txs.map((tx, index) => (
                                   <TableRow key={index}>
-                                    <TableCell className="font-mono">
+                                    <TableCell className="font-mono text-purple-800 dark:text-purple-200">
                                       <TruncateWithTooltip content={tx.actions[0]?.to || 'N/A'} />
                                     </TableCell>
-                                    <TableCell>{tx.actions[0]?.value || 'N/A'}</TableCell>
-                                    <TableCell className="font-mono">{tx.actions[0]?.memo || 'N/A'}</TableCell>
+                                    <TableCell className="text-purple-800 dark:text-purple-200">{tx.actions[0]?.value || 'N/A'}</TableCell>
+                                    <TableCell className="font-mono text-purple-800 dark:text-purple-200">{tx.actions[0]?.memo || 'N/A'}</TableCell>
                                   </TableRow>
                                 ))}
                               </TableBody>
