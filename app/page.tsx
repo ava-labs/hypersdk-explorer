@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BlockTable from '@/components/blockFeed';
 import { getLatestBlock, getBlockByHeight, Block } from '@/utils/api';
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from "next-themes";
 
 const PAGE_SIZE = 20;
 
@@ -109,18 +111,35 @@ export default function Home() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {setMounted(true)}, [])
+  if (!mounted) return null
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
   const totalPages = latestBlock ? Math.ceil(latestBlock.height / PAGE_SIZE) : 1;
 
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen p-4">
       <div className="w-full max-w-6xl mx-auto">
-        <CardHeader>
+        <CardHeader className="flex flex-row justify-between items-center">
           <CardTitle className="text-2xl font-bold flex items-center space-x-2">
             <Box className="h-6 w-6 text-primary" />
             <span>HyperSDK Explorer</span>
           </CardTitle>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+          </Button>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
