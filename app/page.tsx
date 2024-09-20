@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BlockTable from '@/components/blockFeed';
 import { getLatestBlock, getBlockByHeight, Block } from '@/utils/api';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Github } from 'lucide-react';
 import { useTheme } from "next-themes";
 
 const PAGE_SIZE = 20;
@@ -132,14 +132,16 @@ export default function Home() {
             <Box className="hw text-primary" />
             <span>HyperSDK Explorer</span>
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-          >
-            {theme === "dark" ? <Sun className="hw" /> : <Moon className="hw" />}
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Button variant="outline" size="icon" asChild>
+              <a href="https://github.com/ava-labs/hypersdk-explorer" target="_blank" rel="noopener noreferrer" aria-label="Contribute on GitHub">
+                <Github className="h-5 w-5" />
+              </a>
+            </Button>
+            <Button variant="outline" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
+              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -162,7 +164,7 @@ export default function Home() {
                 <ChevronLeft className="h-4 w-4 mr-2" />
                 Previous
               </Button>
-              <span>
+              <span style={{ textDecoration:"underline" }}>
                 Page {currentPage} of {totalPages}
               </span>
               <Button
