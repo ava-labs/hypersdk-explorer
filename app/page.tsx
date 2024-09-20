@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/pagination"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BlockTable from '@/components/blockFeed';
+import SearchTransactionHash from '@/components/ui/SearchTxnHash';
 import { getLatestBlock, getBlockByHeight, Block } from '@/utils/api';
 
 const PAGE_SIZE = 25;
@@ -164,6 +165,9 @@ export default function Home() {
             <span>HyperSDK Explorer</span>
           </CardTitle>
         </CardHeader>
+        <CardContent>
+          <SearchTransactionHash />
+        </CardContent>
         <CardContent>
           <div className="space-y-4">
             <div className="overflow-x-auto">

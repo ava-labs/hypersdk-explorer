@@ -39,6 +39,8 @@ export const getLatestBlock = async (): Promise<Block> => {
     method: 'indexer.getLatestBlock',
     params: {},
   });
+  // Log for now
+  console.log('Block res:', JSON.stringify(response.data, null, 2));
   return response.data.result.block;
 };
 
@@ -60,4 +62,19 @@ export const getBlock = async (blockID: string): Promise<Block> => {
     params: { blockID },
   });
   return response.data.result.block;
+};
+
+export const getTx = async (txID: string): Promise<Transaction> => {
+  try {
+    const response = await api.post('/latestBlock', {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'indexer.getTx',
+      params: { txID },
+    });
+    return response.data.result;
+  } catch (error) {
+    console.error('Error fetching transaction:', error);
+    throw error;
+  }
 };
