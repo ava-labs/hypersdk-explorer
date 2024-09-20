@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, KeyboardEvent } from 'react';
 import { Search, X, Clock, CheckCircle, ChevronUp, ChevronDown, XCircle, Cpu, Coins } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ const SearchTransactionHash: React.FC = () => {
   }, [transaction]);
 
   const handleSearch = async () => {
+    if (!searchHash.trim()) return;
     setIsLoading(true);
     setError(null);
     setTransaction(null);
@@ -32,9 +33,15 @@ const SearchTransactionHash: React.FC = () => {
         setError('Your search did not match any records.');
       }
     } catch (err) {
-      // console.log('Error fetching transaction:', err);
+      setError('Error');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
     }
   };
 
@@ -52,11 +59,12 @@ const SearchTransactionHash: React.FC = () => {
       <div className="flex space-x-2">
         <Input
           type="text"
-          placeholder="Search by Txn Hash..."
+          placeholder="Search by Transaction Hash..."
           value={searchHash}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setsearchHash(e.target.value)
           }
+          onKeyDown={handleEnter}
         />
         <Button onClick={handleSearch} disabled={isLoading}>
           {isLoading ? "Searching..." : <Search className="h-4 w-4" />}
