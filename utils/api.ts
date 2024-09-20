@@ -22,6 +22,9 @@ export interface Transaction {
     signer: string[];
     signature: string[];
   };
+  success?: boolean; 
+  fee?: number;
+  units?: number[];
 }
 
 export interface Block {

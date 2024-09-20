@@ -16,6 +16,7 @@ const SearchTransactionHash: React.FC = () => {
   useEffect(() => {
     if (transaction) {
       setIsMinimized(false);
+      console.log('Txn:', transaction);
     }
   }, [transaction]);
 
@@ -112,7 +113,7 @@ const SearchTransactionHash: React.FC = () => {
                             Fee
                           </p>
                           <p className="">
-                            {transaction.fee}
+                            {transaction.fee ?? "N/A"}
                           </p>
                         </div>
                         <div className="space-y-1">
@@ -140,7 +141,11 @@ const SearchTransactionHash: React.FC = () => {
                             Timestamp
                           </p>
                           <p className="">
-                            {new Date(transaction.timestamp).toLocaleString()}
+                            {transaction.timestamp
+                              ? new Date(
+                                  Number(transaction.timestamp)
+                                ).toLocaleString()
+                              : "N/A"}
                           </p>
                         </div>
                         <div className="space-y-1 col-span-2">
@@ -149,7 +154,9 @@ const SearchTransactionHash: React.FC = () => {
                             Units
                           </p>
                           <p className="">
-                            [{transaction.units.join(", ")}]
+                            {transaction.units
+                              ? `[${transaction.units.join(", ")}]`
+                              : "N/A"}
                           </p>
                         </div>
                       </div>
