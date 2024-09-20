@@ -39,7 +39,7 @@ export const getLatestBlock = async (): Promise<Block> => {
     method: 'indexer.getLatestBlock',
     params: {},
   });
-  return response.data.result.block;
+  return response.data.result.block?.block || response.data.result.block;
 };
 
 export const getBlockByHeight = async (height: number): Promise<Block> => {
@@ -49,7 +49,7 @@ export const getBlockByHeight = async (height: number): Promise<Block> => {
     method: 'indexer.getBlockByHeight',
     params: { height },
   });
-  return response.data.result.block;
+  return response.data.result.block?.block || response.data.result.block;
 };
 
 export const getBlock = async (blockID: string): Promise<Block> => {
@@ -59,5 +59,5 @@ export const getBlock = async (blockID: string): Promise<Block> => {
     method: 'indexer.getBlock',
     params: { blockID },
   });
-  return response.data.result.block;
+  return response.data.result.block?.block || response.data.result.block;
 };
