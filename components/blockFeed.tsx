@@ -1,7 +1,7 @@
 import React from 'react';
-import { ChevronDown, ChevronUp, Copy, Clock, Hash } from 'lucide-react';
+import { ChevronDown, ChevronUp, Copy, Clock, Hash, ArrowRightLeft, BadgeCent } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton"
@@ -161,32 +161,55 @@ const BlockTable: React.FC<BlockTableProps> = ({
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <TableCell colSpan={6}>
-                      <Card className="bg-muted/30 border-none shadow-none">
-                        <CardContent className="p-4">
-                          <h3 className="font-semibold mb-2 flex items-center space-x-2">
-                            <Hash className="h-4 w-4 text-primary" />
-                            <span>Block Details</span>
-                          </h3>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <p><strong>Chain ID:</strong> {block.txs[0]?.base.chainId || 'N/A'}</p>
-                              <p><strong>Max Fee:</strong> {block.txs[0]?.base.maxFee || 'N/A'}</p>
-                            </div>
-                            <div>
-                              <h4 className="font-semibold mb-1">Transactions:</h4>
-                              {block.txs.map((tx, index) => (
-                                <div key={index} className="mb-2 p-2 bg-background rounded-md">
-                                  <p><strong>To:</strong> <TruncateWithTooltip content={tx.actions[0]?.to || 'N/A'} /></p>
-                                  <p><strong>Value:</strong> {tx.actions[0]?.value || 'N/A'}</p>
-                                  <p><strong>Memo:</strong> {tx.actions[0]?.memo || 'N/A'}</p>
-                                </div>
-                              ))}
-                            </div>
+                  <TableCell colSpan={6}>
+                    <Card className="bg-muted/30 border-none shadow-none">
+                      <CardContent className="p-4">
+                        <h3 className="font-semibold mb-4 flex items-center space-x-2">
+                          <Hash className="h-4 w-4 text-primary" />
+                          <span>Block Details</span>
+                        </h3>
+                        <div className="space-y-4">
+                          <div>
+                            <Badge variant="outline" className="mb-1 flex items-center w-fit">
+                              <Hash className="h-4 w-4 mr-2" />Chain ID
+                            </Badge>
+                            <p className="font-mono">{block.txs[0]?.base.chainId || 'N/A'}</p>
                           </div>
-                        </CardContent>
-                      </Card>
-                    </TableCell>
+                          <div>
+                            <Badge variant="outline" className="mb-1 flex items-center w-fit">
+                              <BadgeCent className="h-4 w-4 mr-2" />Max Fee
+                            </Badge>
+                            <p>{block.txs[0]?.base.maxFee || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <Badge variant="outline" className="mb-1 flex items-center w-fit">
+                              <ArrowRightLeft className="h-4 w-4 mr-2" />Transactions
+                            </Badge>
+                            <Table className="mt-2">
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>To</TableHead>
+                                  <TableHead>Value</TableHead>
+                                  <TableHead>Memo</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {block.txs.map((tx, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell className="font-mono">
+                                      <TruncateWithTooltip content={tx.actions[0]?.to || 'N/A'} />
+                                    </TableCell>
+                                    <TableCell>{tx.actions[0]?.value || 'N/A'}</TableCell>
+                                    <TableCell className="font-mono">{tx.actions[0]?.memo || 'N/A'}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TableCell>
                   </motion.tr>
                 )}
               </AnimatePresence>
