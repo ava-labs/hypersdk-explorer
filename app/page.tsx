@@ -125,11 +125,11 @@ export default function Home() {
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen p-4 bg-white dark:bg-gray-900 text-black dark:text-white">
       <div className="w-full max-w-6xl mx-auto">
         <CardHeader className="flex flex-row justify-between items-center">
-          <CardTitle className="text-2xl font-bold flex items-center space-x-2">
-            <Box className="h-6 w-6 text-primary" />
+          <CardTitle className="text-3xl font-bold flex items-center space-x-2">
+            <Box className="hw text-primary" />
             <span>HyperSDK Explorer</span>
           </CardTitle>
           <Button
@@ -138,7 +138,7 @@ export default function Home() {
             onClick={toggleTheme}
             aria-label="Toggle theme"
           >
-            {theme === "dark" ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+            {theme === "dark" ? <Sun className="hw" /> : <Moon className="hw" />}
           </Button>
         </CardHeader>
         <CardContent>

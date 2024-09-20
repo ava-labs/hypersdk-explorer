@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronDown, ChevronUp, Copy, Clock, Hash, ArrowRightLeft, BadgeCent } from 'lucide-react';
+import { ChevronDown, ChevronUp, Copy, Hash, ArrowRightLeft, BadgeCent } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -56,18 +56,18 @@ const BlockTable: React.FC<BlockTableProps> = ({
   }
 
   return (
-    <Table>
+    <Table className="w-full border-collapse bg-white dark:bg-gray-800 text-sm">
       <TableHeader>
-        <TableRow className="bg-muted/50">
-          <TableHead className="w-[100px]">Height</TableHead>
-          <TableHead>Parent Block</TableHead>
-          <TableHead>Timestamp</TableHead>
-          <TableHead>Transactions</TableHead>
-          <TableHead>State Root</TableHead>
-          <TableHead className="w-[100px]">Actions</TableHead>
+        <TableRow className="bg-gray-100 dark:bg-gray-700">
+          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">Height</TableHead>
+          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">Parent Block</TableHead>
+          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">Timestamp</TableHead>
+          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">Transactions</TableHead>
+          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">State Root</TableHead>
+          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">Actions</TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody>
+      <TableBody className="bg-white dark:bg-gray-800">
         <AnimatePresence>
           {isLoading && (
             <motion.tr
@@ -90,10 +90,10 @@ const BlockTable: React.FC<BlockTableProps> = ({
                 initial={{ opacity: 0, backgroundColor: "var(--primary)" }}
                 animate={{ opacity: 1, backgroundColor: "transparent" }}
                 transition={{ duration: 0.5 }}
-                className="hover:bg-muted/50 transition-colors"
+                className="hover:bg-muted/50 transition-colors border-b border-gray-100 dark:border-gray-700"
               >
                 <TableCell className="font-medium">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 p-4 pl-8 text-gray-500 dark:text-gray-400">
                     <span>{block.height}</span>
                   </div>
                 </TableCell>
@@ -115,7 +115,6 @@ const BlockTable: React.FC<BlockTableProps> = ({
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-2">
-                    <Clock className="h-4 w-4 text-muted-foreground" />
                     <span>{new Date(block.timestamp).toLocaleString()}</span>
                   </div>
                 </TableCell>
@@ -164,7 +163,7 @@ const BlockTable: React.FC<BlockTableProps> = ({
                   <TableCell colSpan={6}>
                     <Card>
                       <CardHeader>
-                        <CardTitle>Block Details</CardTitle>
+                        <CardTitle className="text-2xl">Block Details</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-4">
