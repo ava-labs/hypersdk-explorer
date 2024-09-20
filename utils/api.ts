@@ -8,8 +8,8 @@ const api = axios.create({
 });
 
 export interface Transaction {
+  timestamp: number;
   base: {
-    timestamp: number;
     chainId: string;
     maxFee: number;
   };
