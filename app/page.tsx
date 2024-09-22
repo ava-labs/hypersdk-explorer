@@ -13,8 +13,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BlockTable from '@/components/blockFeed';
 import SearchTransactionHash from '@/components/ui/SearchTxnHash';
 import { getLatestBlock, getBlockByHeight, Block } from '@/utils/api';
+import { Moon, Sun, Github } from 'lucide-react';
+import { useTheme } from "next-themes";
 
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 20;
 
 export default function Home() {
   const [blocks, setBlocks] = useState<Block[]>([]);
@@ -56,7 +58,7 @@ export default function Home() {
     } catch (err) {
       setError(`Failed to fetch blocks: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
-      setTimeout(() => setIsLoading(false), 1000);
+      setTimeout(() => setIsLoading(false), 500);
     }
   }, []);
 
@@ -154,16 +156,37 @@ export default function Home() {
     setTimeout(() => setCopiedField(null), 2000);
   };
 
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {setMounted(true)}, [])
+  if (!mounted) return null
+
+  const toggleTheme = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
+  const totalPages = latestBlock ? Math.ceil(latestBlock.height / PAGE_SIZE) : 1;
+
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <Card className="w-full max-w-6xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold flex items-center space-x-2">
-            <Box className="h-6 w-6 text-primary" />
+    <div className="min-h-screen p-4 bg-white dark:bg-gray-900 text-black dark:text-white">
+      <div className="w-full max-w-6xl mx-auto">
+        <CardHeader className="flex flex-row justify-between items-center">
+          <CardTitle className="text-3xl font-bold flex items-center space-x-2">
+            <Box className="hw text-primary" />
             <span>HyperSDK Explorer</span>
           </CardTitle>
+          <div className="flex items-center space-x-2">
+            <Button variant="outline" size="icon" asChild>
+              <a href="https://github.com/ava-labs/hypersdk-explorer" target="_blank" rel="noopener noreferrer" aria-label="Contribute on GitHub">
+                <Github className="h-5 w-5" />
+              </a>
+            </Button>
+            <Button variant="outline" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
+              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <SearchTransactionHash />
@@ -220,31 +243,13 @@ export default function Home() {
                 </Pagination>
               </div>
               <div className="sm:hidden">
-                <Pagination>
-                  <PaginationContent>
-                    {handlePages().map((page, index) => (
-                      <PaginationItem key={index}>
-                        {page === "ellipsis" ? (
-                          <PaginationEllipsis />
-                        ) : (
-                          <PaginationLink
-                            onClick={() => setCurrentPage(page as number)}
-                            isActive={currentPage === page}
-                          >
-                            {page}
-                          </PaginationLink>
-                        )}
-                      </PaginationItem>
-                    ))}
-                  </PaginationContent>
-                </Pagination>
+                <span style={{ textDecoration:"underline" }}>
+                  Page {currentPage} of {totalPages}
+                </span>
               </div>
               <Button
                 onClick={handleNextPage}
-                disabled={
-                  currentPage ===
-                  (latestBlock ? Math.ceil(latestBlock.height / PAGE_SIZE) : 1)
-                }
+                disabled={currentPage === totalPages}
                 aria-label="Next page"
                 className="hidden sm:inline-flex"
               >
@@ -253,10 +258,7 @@ export default function Home() {
               </Button>
               <Button
                 onClick={handleNextPage}
-                disabled={
-                  currentPage ===
-                  (latestBlock ? Math.ceil(latestBlock.height / PAGE_SIZE) : 1)
-                }
+                disabled={currentPage === totalPages}
                 aria-label="Next page"
                 className="sm:hidden"
                 size="icon"
@@ -266,7 +268,7 @@ export default function Home() {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </div>
     </div>
   );
 }
