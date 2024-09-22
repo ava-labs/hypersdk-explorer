@@ -56,9 +56,9 @@ const BlockTable: React.FC<BlockTableProps> = ({
   }
 
   return (
-    <div className="h-[calc(100vh-200px)] overflow-y-auto">
+    <div className="h-[calc(100vh-200px)] overflow-y-auto relative">
       <Table className="w-full border-collapse bg-white dark:bg-gray-800 text-sm">
-        <TableHeader>
+        <TableHeader className="sticky top-0 z-10">
           <TableRow className="bg-gray-100 dark:bg-gray-700">
             <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">
               Height
