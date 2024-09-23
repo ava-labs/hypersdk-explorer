@@ -2,8 +2,16 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Box } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+} from "@/components/ui/pagination"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BlockTable from '@/components/blockFeed';
+import SearchTransactionHash from '@/components/ui/SearchTxnHash';
 import { getLatestBlock, getBlockByHeight, Block } from '@/utils/api';
 import { Moon, Sun, Github } from 'lucide-react';
 import { useTheme } from "next-themes";
@@ -83,6 +91,42 @@ export default function Home() {
     }
   }, [currentPage, latestBlock, fetchBlocks]);
 
+  const handlePages = useCallback(() => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    const totalPages = latestBlock ? Math.ceil(latestBlock.height / PAGE_SIZE) : 1;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('ellipsis');
+        pageNumbers.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(1);
+        pageNumbers.push('ellipsis');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pageNumbers.push(i);
+        }
+      } else {
+        pageNumbers.push(1);
+        pageNumbers.push('ellipsis');
+        pageNumbers.push(currentPage - 1);
+        pageNumbers.push(currentPage);
+        pageNumbers.push(currentPage + 1);
+        pageNumbers.push('ellipsis');
+        pageNumbers.push(totalPages);
+      }
+    }
+
+    return pageNumbers;
+  }, [currentPage, latestBlock]);
+
   const handlePrevPage = useCallback(() => {
     if (currentPage > 1) {
       setCurrentPage(prev => prev - 1);
@@ -90,7 +134,8 @@ export default function Home() {
   }, [currentPage]);
 
   const handleNextPage = useCallback(() => {
-    if (latestBlock && (currentPage * PAGE_SIZE) < latestBlock.height) {
+    const totalPages = latestBlock ? Math.ceil(latestBlock.height / PAGE_SIZE) : 1;
+    if (currentPage < totalPages) {
       setCurrentPage(prev => prev + 1);
     }
   }, [currentPage, latestBlock]);
@@ -144,6 +189,9 @@ export default function Home() {
           </div>
         </CardHeader>
         <CardContent>
+          <SearchTransactionHash />
+        </CardContent>
+        <CardContent>
           <div className="space-y-4">
             <div className="overflow-x-auto">
               <BlockTable
@@ -160,20 +208,62 @@ export default function Home() {
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
                 aria-label="Previous page"
+                className="hidden sm:inline-flex"
               >
                 <ChevronLeft className="h-4 w-4 mr-2" />
                 Previous
               </Button>
-              <span style={{ textDecoration:"underline" }}>
-                Page {currentPage} of {totalPages}
-              </span>
+              <Button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                aria-label="Previous page"
+                className="sm:hidden"
+                size="icon"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <div className="hidden sm:block">
+                <Pagination>
+                  <PaginationContent>
+                    {handlePages().map((page, index) => (
+                      <PaginationItem key={index}>
+                        {page === "ellipsis" ? (
+                          <PaginationEllipsis />
+                        ) : (
+                          <PaginationLink
+                            onClick={() => setCurrentPage(page as number)}
+                            isActive={currentPage === page}
+                          >
+                            {page}
+                          </PaginationLink>
+                        )}
+                      </PaginationItem>
+                    ))}
+                  </PaginationContent>
+                </Pagination>
+              </div>
+              <div className="sm:hidden">
+                <span style={{ textDecoration:"underline" }}>
+                  Page {currentPage} of {totalPages}
+                </span>
+              </div>
               <Button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
                 aria-label="Next page"
+                className="hidden sm:inline-flex"
               >
                 Next
                 <ChevronRight className="h-4 w-4 ml-2" />
+              </Button>
+              <Button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                aria-label="Next page"
+                className="sm:hidden"
+                size="icon"
+              >
+                <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </div>

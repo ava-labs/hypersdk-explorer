@@ -56,166 +56,219 @@ const BlockTable: React.FC<BlockTableProps> = ({
   }
 
   return (
-    <Table className="w-full border-collapse bg-white dark:bg-gray-800 text-sm">
-      <TableHeader>
-        <TableRow className="bg-gray-100 dark:bg-gray-700">
-          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">Height</TableHead>
-          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">Parent Block</TableHead>
-          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">Timestamp</TableHead>
-          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">Transactions</TableHead>
-          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">State Root</TableHead>
-          <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody className="bg-white dark:bg-gray-800">
-        <AnimatePresence>
-          {isLoading && (
-            <motion.tr
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <TableCell colSpan={6}>
-                <div className="flex items-center justify-center py-4">
-                  <Skeleton className="w-[100px] h-[20px] rounded-full" />
-                  <span className="ml-2 text-sm text-muted-foreground font-semibold">Loading new blocks...</span>
-                </div>
-              </TableCell>
-            </motion.tr>
-          )}
-          {blocks.map((block) => (
-            <React.Fragment key={block.height}>
+    <div className="h-[calc(100vh-200px)] overflow-y-auto relative">
+      <Table className="w-full border-collapse bg-white dark:bg-gray-800 text-sm">
+        <TableHeader className="sticky top-0 z-10">
+          <TableRow className="bg-gray-100 dark:bg-gray-700">
+            <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">
+              Height
+            </TableHead>
+            <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">
+              Parent Block
+            </TableHead>
+            <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">
+              Timestamp
+            </TableHead>
+            <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">
+              Transactions
+            </TableHead>
+            <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">
+              State Root
+            </TableHead>
+            <TableHead className="border-b dark:border-gray-600 font-medium p-4 pl-8 text-gray-400 dark:text-gray-200 text-left">
+              Actions
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody className="bg-white dark:bg-gray-800">
+          <AnimatePresence>
+            {isLoading && (
               <motion.tr
-                initial={{ opacity: 0, backgroundColor: "var(--primary)" }}
-                animate={{ opacity: 1, backgroundColor: "transparent" }}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.5 }}
-                className="hover:bg-muted/50 transition-colors border-b border-gray-100 dark:border-gray-700"
               >
-                <TableCell className="font-medium">
-                  <div className="flex items-center space-x-2 p-4 pl-8 text-gray-500 dark:text-gray-400">
-                    <span>{block.height}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="font-mono relative group">
-                  <TruncateWithTooltip content={block.parent} />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-0 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => copyToClipboard(block.parent, `parent-${block.height}`)}
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  {copiedField === `parent-${block.height}` && (
-                    <span className="absolute right-8 top-1/2 transform -translate-y-1/2 text-sm text-green-500">
-                      Copied!
+                <TableCell colSpan={6}>
+                  <div className="flex items-center justify-center py-4">
+                    <Skeleton className="w-[100px] h-[20px] rounded-full" />
+                    <span className="ml-2 text-sm text-muted-foreground font-semibold">
+                      Loading new blocks...
                     </span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center space-x-2">
-                    <span>{new Date(block.timestamp).toLocaleString()}</span>
                   </div>
-                </TableCell>
-                <TableCell>
-                  <Badge variant="secondary">{block.txs.length}</Badge>
-                </TableCell>
-                <TableCell className="font-mono relative group">
-                  <TruncateWithTooltip content={block.stateRoot} />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-0 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => copyToClipboard(block.stateRoot, `state-${block.height}`)}
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  {copiedField === `state-${block.height}` && (
-                    <span className="absolute right-8 top-1/2 transform -translate-y-1/2 text-sm text-green-500">
-                      Copied!
-                    </span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleRowExpansion(block.height)}
-                  >
-                    {expandedRows.has(block.height) ? (
-                      <ChevronUp className="h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="h-4 w-4" />
-                    )}
-                  </Button>
                 </TableCell>
               </motion.tr>
-              <AnimatePresence>
-                {expandedRows.has(block.height) && (
-                  <motion.tr
-                    key={`expanded-${block.height}`}
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                  <TableCell colSpan={6}>
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-2xl">Block Details</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          <div className="p-4 rounded-lg bg-blue-100 dark:bg-blue-900">
-                            <Badge variant="outline" className="mb-1 flex items-center w-fit bg-blue-200 dark:bg-blue-800">
-                              <Hash className="h-4 w-4 mr-2" />Chain ID
-                            </Badge>
-                            <p className="mt-2 font-mono text-blue-800 dark:text-blue-200">{block.txs[0]?.base.chainId || 'N/A'}</p>
-                          </div>
-                          <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900">
-                            <Badge variant="outline" className="mb-1 flex items-center w-fit bg-green-200 dark:bg-green-800">
-                              <BadgeCent className="h-4 w-4 mr-2" />Max Fee
-                            </Badge>
-                            <p className="mt-2 text-green-800 dark:text-green-200">{block.txs[0]?.base.maxFee || 'N/A'}</p>
-                          </div>
-                          <div className="p-4 rounded-lg bg-purple-100 dark:bg-purple-900">
-                            <Badge variant="outline" className="mb-1 flex items-center w-fit bg-purple-200 dark:bg-purple-800">
-                              <ArrowRightLeft className="h-4 w-4 mr-2" />Transactions
-                            </Badge>
-                            <Table className="mt-2">
-                              <TableHeader>
-                                <TableRow>
-                                  <TableHead className="text-purple-800 dark:text-purple-200">To</TableHead>
-                                  <TableHead className="text-purple-800 dark:text-purple-200">Value</TableHead>
-                                  <TableHead className="text-purple-800 dark:text-purple-200">Memo</TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {block.txs.map((tx, index) => (
-                                  <TableRow key={index}>
-                                    <TableCell className="font-mono text-purple-800 dark:text-purple-200">
-                                      <TruncateWithTooltip content={tx.actions[0]?.to || 'N/A'} />
-                                    </TableCell>
-                                    <TableCell className="text-purple-800 dark:text-purple-200">{tx.actions[0]?.value || 'N/A'}</TableCell>
-                                    <TableCell className="font-mono text-purple-800 dark:text-purple-200">{tx.actions[0]?.memo || 'N/A'}</TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+            )}
+            {blocks.map((block) => (
+              <React.Fragment key={block.height}>
+                <motion.tr
+                  initial={{ opacity: 0, backgroundColor: "var(--primary)" }}
+                  animate={{ opacity: 1, backgroundColor: "transparent" }}
+                  transition={{ duration: 0.5 }}
+                  className="hover:bg-muted/50 transition-colors border-b border-gray-100 dark:border-gray-700"
+                >
+                  <TableCell className="font-medium">
+                    <div className="flex items-center space-x-2 p-4 pl-8 text-gray-500 dark:text-gray-400">
+                      <span>{block.height}</span>
+                    </div>
                   </TableCell>
-                  </motion.tr>
-                )}
-              </AnimatePresence>
-            </React.Fragment>
-          ))}
-        </AnimatePresence>
-      </TableBody>
-    </Table>
+                  <TableCell className="font-mono relative group">
+                    <TruncateWithTooltip content={block.parent} />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() =>
+                        copyToClipboard(block.parent, `parent-${block.height}`)
+                      }
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    {copiedField === `parent-${block.height}` && (
+                      <span className="absolute right-8 top-1/2 transform -translate-y-1/2 text-sm text-green-500">
+                        Copied!
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <span>{new Date(block.timestamp).toLocaleString()}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{block.txs.length}</Badge>
+                  </TableCell>
+                  <TableCell className="font-mono relative group">
+                    <TruncateWithTooltip content={block.stateRoot} />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() =>
+                        copyToClipboard(
+                          block.stateRoot,
+                          `state-${block.height}`
+                        )
+                      }
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    {copiedField === `state-${block.height}` && (
+                      <span className="absolute right-8 top-1/2 transform -translate-y-1/2 text-sm text-green-500">
+                        Copied!
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleRowExpansion(block.height)}
+                    >
+                      {expandedRows.has(block.height) ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </TableCell>
+                </motion.tr>
+                <AnimatePresence>
+                  {expandedRows.has(block.height) && (
+                    <motion.tr
+                      key={`expanded-${block.height}`}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <TableCell colSpan={6}>
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-2xl">
+                              Block Details
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-4">
+                              <div className="p-4 rounded-lg bg-blue-100 dark:bg-blue-900">
+                                <Badge
+                                  variant="outline"
+                                  className="mb-1 flex items-center w-fit bg-blue-200 dark:bg-blue-800"
+                                >
+                                  <Hash className="h-4 w-4 mr-2" />
+                                  Chain ID
+                                </Badge>
+                                <p className="mt-2 font-mono text-blue-800 dark:text-blue-200">
+                                  {block.txs[0]?.base.chainId || "N/A"}
+                                </p>
+                              </div>
+                              <div className="p-4 rounded-lg bg-green-100 dark:bg-green-900">
+                                <Badge
+                                  variant="outline"
+                                  className="mb-1 flex items-center w-fit bg-green-200 dark:bg-green-800"
+                                >
+                                  <BadgeCent className="h-4 w-4 mr-2" />
+                                  Max Fee
+                                </Badge>
+                                <p className="mt-2 text-green-800 dark:text-green-200">
+                                  {block.txs[0]?.base.maxFee || "N/A"}
+                                </p>
+                              </div>
+                              <div className="p-4 rounded-lg bg-purple-100 dark:bg-purple-900">
+                                <Badge
+                                  variant="outline"
+                                  className="mb-1 flex items-center w-fit bg-purple-200 dark:bg-purple-800"
+                                >
+                                  <ArrowRightLeft className="h-4 w-4 mr-2" />
+                                  Transactions
+                                </Badge>
+                                <Table className="mt-2">
+                                  <TableHeader>
+                                    <TableRow>
+                                      <TableHead className="text-purple-800 dark:text-purple-200">
+                                        To
+                                      </TableHead>
+                                      <TableHead className="text-purple-800 dark:text-purple-200">
+                                        Value
+                                      </TableHead>
+                                      <TableHead className="text-purple-800 dark:text-purple-200">
+                                        Memo
+                                      </TableHead>
+                                    </TableRow>
+                                  </TableHeader>
+                                  <TableBody>
+                                    {block.txs.map((tx, index) => (
+                                      <TableRow key={index}>
+                                        <TableCell className="font-mono text-purple-800 dark:text-purple-200">
+                                          <TruncateWithTooltip
+                                            content={tx.actions[0]?.to || "N/A"}
+                                          />
+                                        </TableCell>
+                                        <TableCell className="text-purple-800 dark:text-purple-200">
+                                          {tx.actions[0]?.value || "N/A"}
+                                        </TableCell>
+                                        <TableCell className="font-mono text-purple-800 dark:text-purple-200">
+                                          {tx.actions[0]?.memo || "N/A"}
+                                        </TableCell>
+                                      </TableRow>
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </TableCell>
+                    </motion.tr>
+                  )}
+                </AnimatePresence>
+              </React.Fragment>
+            ))}
+          </AnimatePresence>
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 
